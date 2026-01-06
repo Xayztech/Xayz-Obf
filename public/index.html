@@ -14,20 +14,64 @@
 
     <section id="login-section" class="active-section">
         <div class="cyber-card login-box">
-            <h1 class="glitch-text" data-text="Xayz OBF Web">Xayz OBF Web</h1>
-            <p class="sub-glitch">ULTRA SECURE OBFUSCATOR WITH PROTECTION</p>
+            <h1 class="glitch-text" data-text="Xayz Obf Web">Xayz Obf Web</h1>
+            <p class="sub-glitch">ULTRA SECURE OBFUSCATOR</p>
             <div class="scanner-line"></div>
+            
             <p class="warning-text">⚠️ AUTHENTICATION REQUIRED</p>
-            <script async src="https://telegram.org/js/telegram-widget.js?22" 
-                    data-telegram-login="XayzEncrptyBot" 
-                    data-size="large" 
-                    data-radius="5" 
-                    data-request-access="write" 
-                    data-userpic="false" 
-                    data-onauth="onTelegramAuth(user)"></script>
+            
+            <div id="telegram-login-container">
+                <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                        data-telegram-login="XayzEncrptyBot" 
+                        data-size="large" 
+                        data-radius="5" 
+                        data-request-access="write" 
+                        data-userpic="false" 
+                        data-onauth="onTelegramAuth(user)"></script>
+            </div>
+
+            <div class="login-options">
+                <button class="guest-btn" onclick="enterGuestMode()">
+                    <i class="fas fa-user-secret"></i> GUEST MODE
+                </button>
+                <button class="tutorial-btn" onclick="openTutorial()">
+                    <i class="fas fa-book"></i> TUTORIAL LOGIN
+                </button>
+            </div>
+
             <p id="login-status" class="status-msg"></p>
         </div>
     </section>
+
+    <div id="tutorial-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTutorial()">&times;</span>
+            <h2 class="modal-title">TUTORIAL LOGIN & AKSES</h2>
+            <div class="modal-body">
+                <h3>METODE 1: LOGIN OTOMATIS (WIDGET)</h3>
+                <p>1. Klik tombol "Log in as..." berwarna biru di layar utama.</p>
+                <p>2. Telegram akan mengirim pesan konfirmasi di aplikasi Telegram HP/PC kamu.</p>
+                <p>3. Buka chat dari "Telegram" (Service Notification).</p>
+                <p>4. Klik tombol "Confirm" atau "Accept" di chat tersebut.</p>
+                <p>5. Website akan otomatis reload dan kamu berhasil masuk.</p>
+                <hr>
+                <h3>METODE 2: LOGIN DENGAN NOMOR HP</h3>
+                <p>1. Jika tombol biru tidak muncul, akan ada kolom input Nomor HP.</p>
+                <p>2. Masukkan nomor HP yang terdaftar di Telegram (awalan +62...).</p>
+                <p>3. Telegram akan mengirim pesan permintaan akses.</p>
+                <p>4. Konfirmasi di aplikasi Telegram.</p>
+                <hr>
+                <h3>METODE 3: GUEST MODE (TANPA LOGIN)</h3>
+                <p>1. Klik tombol "GUEST MODE" berwarna abu-abu.</p>
+                <p>2. Kamu bisa langsung menggunakan fitur Encrypt.</p>
+                <p>3. <strong>Peringatan:</strong> History file tidak akan disimpan jika kamu refresh halaman.</p>
+                <hr>
+                <h3>PEMECAHAN MASALAH (TROUBLESHOOT)</h3>
+                <p><strong>Error "Bot Domain Invalid"?</strong><br>Berarti Owner belum mendaftarkan domain ke BotFather. Hubungi Owner.</p>
+                <p><strong>Widget tidak muncul?</strong><br>Matikan AdBlocker atau gunakan browser Chrome/Firefox versi terbaru.</p>
+            </div>
+        </div>
+    </div>
 
     <section id="dashboard-section" class="hidden">
         <nav class="sidebar">
@@ -35,7 +79,7 @@
             <div class="user-info" id="user-display">Guest</div>
             <ul>
                 <li onclick="switchTab('encrypt')" class="active"><i class="fas fa-lock"></i> Encrypt</li>
-                <li onclick="switchTab('history')"><i class="fas fa-history"></i> History</li>
+                <li onclick="switchTab('history')" id="history-menu-item"><i class="fas fa-history"></i> History</li>
                 <li onclick="logout()"><i class="fas fa-power-off"></i> Logout</li>
             </ul>
         </nav>
@@ -56,7 +100,7 @@
                     <div class="config-item">
                         <label>ENCRYPTION METHOD</label>
                         <select id="methodSelect" class="cyber-select">
-                            <option value="ghost">👻 Ghost (Invisible)</option>
+                            <option value="ghost">👻 Ghost</option>
                             <option value="encnew">🆕 Encnew (Advanced)</option>
                             <option value="japan">🇯🇵 Japan Style</option>
                             <option value="arab">🇸🇦 Arab Style</option>
@@ -112,4 +156,4 @@
     <script src="js/protection.js"></script>
     <script src="js/main.js"></script>
 </body>
-</html>
+    </html>
