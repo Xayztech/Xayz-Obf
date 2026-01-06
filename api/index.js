@@ -64,18 +64,21 @@ app.post('/api/encrypt', async (req, res) => {
         const obfuscated = await JsConfuser.obfuscate(protectedCode, config);
         const resultCode = obfuscated.code || obfuscated;
 
-        const historyPath = `data/history/${userId}.json`;
-        const history = await getFileContent(historyPath);
-        
-        history.push({
-            method,
-            timestamp: new Date().toISOString(),
-            originalLength: code.length,
-            encryptedLength: resultCode.length,
-            resultCode: resultCode 
-        });
+        // JIKA USER ADALAH GUEST, JANGAN SIMPAN KE GITHUB
+        if (userId !== 'guest') {
+            const historyPath = `data/history/${userId}.json`;
+            const history = await getFileContent(historyPath);
+            
+            history.push({
+                method,
+                timestamp: new Date().toISOString(),
+                originalLength: code.length,
+                encryptedLength: resultCode.length,
+                resultCode: resultCode 
+            });
 
-        await saveFileContent(historyPath, history, `Update history ${userId}`);
+            await saveFileContent(historyPath, history, `Update history ${userId}`);
+        }
 
         res.json({ success: true, code: resultCode });
     } catch (error) {
@@ -85,6 +88,11 @@ app.post('/api/encrypt', async (req, res) => {
 });
 
 app.get('/api/history/:userId', async (req, res) => {
+    // Guest tidak punya history
+    if (req.params.userId === 'guest') {
+        return res.json({ success: true, data: [] });
+    }
+
     try {
         const history = await getFileContent(`data/history/${req.params.userId}.json`);
         res.json({ success: true, data: history });
