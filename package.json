@@ -1,0 +1,21 @@
+{
+  "name": "xycoolcraft-web-obfuscator",
+  "version": "2.0.0",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "express": "latest",
+    "cors": "latest",
+    "js-confuser": "latest",
+    "axios": "latest",
+    "dotenv": "latest",
+    "crypto": "latest",
+    "@octokit/rest": "latest",
+    "acorn": "latest",
+    "acorn-walk": "latest",
+    "google": "latest",
+    "ssh2": "latest"
+  }
+}

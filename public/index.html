@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XYCoolcraft Obfuscator - Prime Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="particles"></div>
+    <div class="scanlines"></div>
+
+    <section id="login-section" class="active-section">
+        <div class="cyber-card login-box">
+            <h1 class="glitch-text" data-text="Xayz OBF Web">Xayz OBF Web</h1>
+            <p class="sub-glitch">ULTRA SECURE OBFUSCATOR WITH PROTECTION</p>
+            <div class="scanner-line"></div>
+            <p class="warning-text">⚠️ AUTHENTICATION REQUIRED</p>
+            <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                    data-telegram-login="XayzEncryptBot" 
+                    data-size="large" 
+                    data-radius="5" 
+                    data-request-access="write" 
+                    data-userpic="false" 
+                    data-onauth="onTelegramAuth(user)"></script>
+            <p id="login-status" class="status-msg"></p>
+        </div>
+    </section>
+
+    <section id="dashboard-section" class="hidden">
+        <nav class="sidebar">
+            <div class="logo">XY<span>Cool</span></div>
+            <div class="user-info" id="user-display">Guest</div>
+            <ul>
+                <li onclick="switchTab('encrypt')" class="active"><i class="fas fa-lock"></i> Encrypt</li>
+                <li onclick="switchTab('history')"><i class="fas fa-history"></i> History</li>
+                <li onclick="logout()"><i class="fas fa-power-off"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <div id="encrypt-tab" class="tab-content active">
+                <h2 class="section-title">SYSTEM <span class="highlight">ENCRYPTION</span></h2>
+                
+                <div class="upload-zone" id="drop-zone">
+                    <div class="circle-anim"></div>
+                    <i class="fas fa-microchip"></i>
+                    <h3>DROP JAVASCRIPT FILE</h3>
+                    <p>Or Click to initialize upload</p>
+                    <input type="file" id="fileInput" accept=".js" hidden>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>ENCRYPTION METHOD</label>
+                        <select id="methodSelect" class="cyber-select">
+                            <option value="ghost">👻 Ghost (Invisible)</option>
+                            <option value="encnew">🆕 Encnew (Advanced)</option>
+                            <option value="japan">🇯🇵 Japan Style</option>
+                            <option value="arab">🇸🇦 Arab Style</option>
+                            <option value="timelocked">⏰ Time Locked</option>
+                            <option value="custom">🔧 Custom Name</option>
+                            <option value="ultra">⚡ Ultra Hard</option>
+                            <option value="siu">🔥 Siu Calcrick</option>
+                            <option value="debug">🐛 Debug Protect</option>
+                            <option value="nova">🌟 Nova Var</option>
+                            <option value="militery">🎖️ Militery</option>
+                            <option value="enigma">🧩 Enigma</option>
+                            <option value="evabula">👻 Evabula</option>
+                            <option value="balanced">⚖️ Balanced</option>
+                            <option value="reversed">🔄 Reversed</option>
+                            <option value="japxarab">🌏 Japan X Arab</option>
+                            <option value="rosemary">🌹 Rosemary</option>
+                            <option value="safecursed">💀 SafeCursed</option>
+                            <option value="safesc">🛡️ SafeSC</option>
+                            <option value="absolut">🩸 Absolut</option>
+                            <option value="rushcers">🚀 RushCers</option>
+                            <option value="olive">🍸 Olive</option>
+                            <option value="obfors">🧱 Obfors</option>
+                            <option value="zenc">🔒 Zenc</option>
+                            <option value="court">⚖️ Court</option>
+                            <option value="oval">🥚 Oval</option>
+                        </select>
+                    </div>
+                    <div class="config-item hidden" id="paramInputDiv">
+                        <label id="paramLabel">PARAMETER</label>
+                        <input type="text" id="paramInput" class="cyber-input" placeholder="Value...">
+                    </div>
+                </div>
+
+                <button class="cyber-btn" onclick="processEncryption()">
+                    <span class="btn-content">EXECUTE PROTOCOL</span>
+                    <div class="btn-glitch"></div>
+                </button>
+
+                <div id="result-area" class="hidden">
+                    <h3 class="res-title">ENCRYPTION RESULT</h3>
+                    <textarea id="codeResult" readonly></textarea>
+                    <button class="download-btn" onclick="downloadResult()">DOWNLOAD .JS</button>
+                </div>
+            </div>
+
+            <div id="history-tab" class="tab-content hidden">
+                <h2 class="section-title">DATA <span class="highlight">LOGS</span></h2>
+                <div class="history-list" id="history-container"></div>
+            </div>
+        </main>
+    </section>
+
+    <script src="js/protection.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
