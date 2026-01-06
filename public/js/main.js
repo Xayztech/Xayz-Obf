@@ -1,5 +1,6 @@
 let currentUser = null;
 
+// --- TELEGRAM LOGIN ---
 function onTelegramAuth(user) {
     document.getElementById('login-status').innerText = "CONNECTING TO SERVER...";
     fetch('/api/auth', {
@@ -15,12 +16,36 @@ function onTelegramAuth(user) {
             showDashboard();
         } else {
             alert("ACCESS DENIED: " + data.message);
-            if(data.message.includes("Join")) window.location.href = "https://t.me/XayTeam";
+            if(data.message.includes("Join")) window.location.href = "https://t.me/XayTeam"; // GANTI LINK CHANNEL
         }
     })
     .catch(() => alert("SERVER ERROR"));
 }
 
+// --- GUEST MODE ---
+function enterGuestMode() {
+    currentUser = {
+        id: "guest",
+        username: "Guest",
+        first_name: "Guest Mode (No History)"
+    };
+    // Jangan simpan di localStorage agar tidak auto-login sebagai guest nanti
+    showDashboard();
+    
+    // Sembunyikan tab history untuk Guest
+    document.getElementById('history-menu-item').style.display = 'none';
+}
+
+// --- TUTORIAL MODAL ---
+function openTutorial() {
+    document.getElementById('tutorial-modal').classList.remove('hidden');
+}
+
+function closeTutorial() {
+    document.getElementById('tutorial-modal').classList.add('hidden');
+}
+
+// --- INIT ---
 window.onload = () => {
     const saved = localStorage.getItem('xy_user');
     if (saved) {
@@ -42,7 +67,10 @@ function showDashboard() {
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('dashboard-section').classList.remove('hidden');
     document.getElementById('user-display').innerText = currentUser.first_name;
-    loadHistory();
+    
+    if(currentUser.id !== 'guest') {
+        loadHistory();
+    }
 }
 
 function logout() {
@@ -51,13 +79,21 @@ function logout() {
 }
 
 function switchTab(tab) {
+    // Cegah guest buka history
+    if(tab === 'history' && currentUser.id === 'guest') {
+        alert("Guest cannot access history!");
+        return;
+    }
+
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.sidebar li').forEach(el => el.classList.remove('active'));
     document.getElementById(`${tab}-tab`).classList.remove('hidden');
     event.currentTarget.classList.add('active');
+    
     if (tab === 'history') loadHistory();
 }
 
+// --- FILE HANDLING ---
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('fileInput');
 let currentCode = "";
@@ -66,6 +102,7 @@ let fileName = "";
 dropZone.onclick = () => fileInput.click();
 fileInput.onchange = (e) => {
     const file = e.target.files[0];
+    if(!file) return;
     fileName = file.name;
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -75,6 +112,7 @@ fileInput.onchange = (e) => {
     reader.readAsText(file);
 };
 
+// --- PROCESS ---
 async function processEncryption() {
     if (!currentCode) return alert("NO FILE DETECTED");
     
@@ -123,7 +161,7 @@ function downloadResult() {
 }
 
 async function loadHistory() {
-    if (!currentUser) return;
+    if (!currentUser || currentUser.id === 'guest') return;
     const container = document.getElementById('history-container');
     container.innerHTML = "LOADING DATABASE...";
     try {
@@ -157,4 +195,4 @@ function downloadString(enc, fname) {
     a.href = URL.createObjectURL(blob);
     a.download = fname;
     a.click();
-}
+        }
